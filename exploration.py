@@ -32,11 +32,23 @@ def visualize_imgs(stimulus, objects, stim_idxs):
     return
 
 def create_mask(objects, object_name):
+    """Create a mask for a given object name.
+    Args:
+        objects (list of str): Object list containing all the names
+        object_name (str): Name of the object to create the mask for
+    """
     mask = [True if object_name in s else False for s in objects]
     mask_pos = [t.tolist() for t in np.where(mask)][0]
     return mask_pos
 
+
 def print_category(stimulus, objects, mask_pos):
+    """Print the number of images in a given category and plot the images.
+    Args:
+        stimulus (array of float): Stimulus containing all the images
+        objects (list of str): Object list containing all the names
+        mask_pos (list of int): List of indices of the stimuli to plot
+    """
     objs = [objects[i] for i in mask_pos]
     print('the number of stimulus with {} object is:'.format(objs[0]), len(objs))
     voc = list(set(objs))
@@ -53,6 +65,13 @@ def print_category(stimulus, objects, mask_pos):
 
 
 def plot_average_firing_rate_for_category(spikes, mask_pos, neuron_idx, category = None):
+    """Plot the average firing rate for a given category.
+    args:
+        spikes (array of float): Spikes containing all the spikes
+        mask_pos (list of int): List of indices of the stimuli to plot
+        neuron_idx (int): Index of the neuron to plot
+        category (str): Name of the category to plot   
+    """
     plt.figure()
     plt.title('Average firing rate for neuron {} and category {} (70-170 ms)'.format(neuron_idx, category))
     plt.plot(spikes[mask_pos,neuron_idx])
@@ -61,7 +80,12 @@ def plot_average_firing_rate_for_category(spikes, mask_pos, neuron_idx, category
 
 
 def plot_average_firing_rate_for_all_categories_merged(objects, spikes, neuron_idx):
-    
+    """Plot the average firing rate for all categories merged.
+    args:
+        objects (list of str): Object list containing all the names
+        spikes (array of float): Spikes containing all the spikes
+        neuron_idx (int): Index of the neuron to plot
+    """
     categories = ['Animals', 'Boats', 'Cars', 'Chairs', 'Faces', 'Fruits', 'Planes', 'Tables']
     
     face_pos = create_mask(objects, 'face')
@@ -123,10 +147,12 @@ def plot_average_firing_rate_for_all_categories_merged(objects, spikes, neuron_i
 
 
 def transform_to_8_classes(objects):
-    '''
-    This function transforms the 64 classes into 8 classes:
-     animals, boats, cars, chairs, faces, fruits, planes, tables
-     '''
+    """ This function transforms the 64 classes (objects given) into 8 classes:
+    animals, boats, cars, chairs, faces, fruits, planes, tables
+
+    args:
+        objects (list of str): Object list containing all the names of objects to transform
+    """
 
     fruits = ['apple', 'apricot', 'peach', 'pear', 'raspberry', 'strawberry', 'walnut', 'watermelon']
     animals = ['bear', 'cow', 'dog', 'elephant', 'gorilla', 'hedgehog', 'lioness', 'turtle']
@@ -142,10 +168,11 @@ def transform_to_8_classes(objects):
 
 
 def transform_classes_to_int(objects):
-    '''
-    This function transforms the 8 classes into integers
-     animals:1, boats:2, cars:3, chairs:4, faces:5, fruits:6, planes:7, tables:8
-     '''
+    """ This function transforms the 8 classes into integers
+    animals:1, boats:2, cars:3, chairs:4, faces:5, fruits:6, planes:7, tables:8
+    args:
+        objects (list of str): Object list containing all the names of objects to transform
+    """
     # define a dictionary that maps the classes to integers
     classes = {'animal':0, 'ship':1, 'car':2, 'chair':3, 'face':4, 'fruit':5, 'airplane':6, 'table':7}
     # create a list of integers
