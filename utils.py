@@ -1,9 +1,12 @@
 ### Utils
 import h5py
 import os
+from PIL import Image
+
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 
 
 def load_it_data(path_to_data):
@@ -28,6 +31,7 @@ def load_it_data(path_to_data):
     
     stimulus_test = datafile['stimulus_test'][()]
     objects_test = datafile['object_test'][()]
+    
 
     ### Decode back object type to latin
     objects_train = [obj_tmp.decode("latin-1") for obj_tmp in objects_train]
@@ -259,3 +263,121 @@ def transform_classes_to_int(objects):
     objects_int = [classes[object] for object in objects]  
     
     return objects_int
+
+
+def save_image(stimulus, objects, stim_idx, output_path):
+    
+    normalize_mean=[0.485, 0.456, 0.406]
+    normalize_std=[0.229, 0.224, 0.225]
+
+    img_tmp = np.transpose(stimulus[stim_idx],[1,2,0])
+
+    ### Go back from normalization
+    img_tmp = (img_tmp*normalize_std + normalize_mean) * 255
+
+    plt.figure()
+    plt.imshow(img_tmp.astype(np.uint8))
+    file_name = os.path.join(output_path, f'image_{stim_idx}.png')
+    plt.savefig(file_name, bbox_inches='tight')
+    plt.close()
+    
+    
+def save_images_from_h5(file_path, output_path):
+    """Create image folder from IT_data.h5 file.
+
+    Args:
+        path_to_data (str): Path to the IT_data.h5 file.
+        output_folder (str): Path to the output folder where the images will be saved.
+
+    Returns:
+        None
+    """
+    
+    # Create output subfolders for each stimulus set
+    os.makedirs(os.path.join(output_path, 'stimulus-train'), exist_ok=True)
+    os.makedirs(os.path.join(output_path, 'stimulus-val'), exist_ok=True)
+    os.makedirs(os.path.join(output_path, 'stimulus-test'), exist_ok=True)        
+        
+    datafile = h5py.File(os.path.join(file_path,'IT_data.h5'), 'r')
+
+    stimulus_train = datafile['stimulus_train'][()]
+    object_train = datafile['object_train'][()]
+    stimulus_val = datafile['stimulus_val'][()]
+    object_val = datafile['object_val'][()]
+    stimulus_test = datafile['stimulus_test'][()]
+    object_test = datafile['object_test'][()]
+
+    output_dir = os.path.join(output_path, 'stimulus-train')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for idx in range(stimulus_train.shape[0]):
+        save_image(stimulus_train, object_train, idx , output_dir)
+    
+    
+    output_dir = os.path.join(output_path, 'stimulus-val')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        
+    for idx in range(stimulus_val.shape[0]):
+        save_image(stimulus_val, object_val, idx , output_dir)
+        
+        
+    output_dir = os.path.join(output_path, 'stimulus-test')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        
+    for idx in range(stimulus_test.shape[0]):
+        save_image(stimulus_test, object_test, idx , output_dir)
+
+
+
+def load_pickle_dict(file_path):
+    """ Load the pkl dictionary into memory
+    
+    Args: 
+        file_path (string): file path were the pickle dictionary is stored
+    
+    Returns:
+        dictionary of values
+    """
+    
+    with open(file_path, "rb") as f:
+        file = pickle.load(f)
+    return file
+
+
+def compute_corr(true_vals, preds):
+    """ Returns the overall correlation between real and predicted values in case the 
+    number of neurons under study is 168.
+    
+    Args:
+        true_vals (array of float):  true values 
+        output_folder (array of float): pred values
+
+    Returns:
+        overall correlation coefficient
+    """
+    
+    return np.mean(np.diag(np.corrcoef(true_vals, preds, rowvar = False)[:168, 168:]))
+
+
+
+def load_test_data(path_to_data):
+    """ Load IT data
+
+    Args:
+        path_to_data (str): Path to the data
+
+    Returns:
+        np.array (x6): Stimulus train/val/test; objects list train/val/test; spikes train/val
+    """
+    
+    datafile = h5py.File(os.path.join(path_to_data,'IT_data.h5'), 'r')
+    
+    stimulus_test = datafile['stimulus_test'][()]
+    spikes_test = datafile['spikes_test'][()]
+    objects_test = [obj_tmp.decode("latin-1") for obj_tmp in objects_test]
+
+    return stimulus_test, spikes_test, objects_test
+
