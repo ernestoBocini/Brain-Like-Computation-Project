@@ -17,16 +17,18 @@
   - File that contains various helper functions for the project.
 
 #### Notebooks:
-- EDA.ipynb
-- week5.ipynb
-- week6.ipynb
-    - File containing all 6 implementations of ML functions required for the project.
+- EDA.ipynb:
+  - file containing exploratory data analysis
+- week5.ipynb:
+  - contains ridge regression, ridge regression with PCA and resnet50
+- week6.ipynb:
+  - contains shallow CNN with optimization
 - week7.ipynb
-    - File containing functions to load and preprocess the data.
+    - contains best model and cornet models
     
 #### Data folder:
-- activationsResNet50: train data needs to be uploaded and placed here with this name
-- cornet-useful: test data needs to be uploaded and placed here with this name
+- activationsResNet50: activations for week5
+- cornet-useful: cornet weights and images. See also [cornet models](https://github.com/dicarlolab/CORnet)
 - resnet50_improved: result submission
 
 
