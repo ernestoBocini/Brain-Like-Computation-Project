@@ -34,10 +34,25 @@
 We assume that the repository is already downloaded and extracted, that the [IT_data.h5](https://drive.google.com/file/d/1s6caFNRpyR9m7ZM6XEv_e8mcXT3_PnHS/view?usp=share_link) is downloaded and extracted in the data folder at the root of the program. We further assume that Anaconda is already installed.
 
 ### Create the environment
-Make sure your environment satisfies the following requirements:
+Make sure your environment satisfies the following fundamental requirements:
 - Python 3.7+
 - NumPy module 
-- matplotlib
+- PyTorch 1.13 module
+- matplotlib module
+
+### Required packages
+- Required packages for the best model:
+  - h5py
+  - os
+  - Image from PIL
+  - pickle
+  - resnet50, ResNet50_Weights from torchvision.models
+  - tqdm
+  - explained_variance_score from sklearn.metrics
+- Required packages for running all the notebooks:
+  - all packages above
+  - optuna
+
 
 ### Run the code
 From the root folder of the project
@@ -45,3 +60,5 @@ From the root folder of the project
 ```shell
 python test.py
 ```
+Careful: training might be time consuming. The model has been trained and runned using the following machine:
+   - 16 vCPU, 104 GB di RAM, NVIDIA T4 x 1 .
