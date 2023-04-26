@@ -3,7 +3,6 @@ import h5py
 import os
 from PIL import Image
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
@@ -201,7 +200,7 @@ def plot_average_firing_rate_for_all_categories_merged(objects, spikes, neuron_i
 
     # now let's plot the average firing rate for all categories for neuron_idx
     fig, ax = plt.subplots(figsize = (15,5))
-    ax.plot(spikes[merged_by_category,neuron_idx])
+    ax.plot(spikes[merged_by_category,neuron_idx], color = 'red')
 
     # Add background colors to the plot based on the category
     ax.axvspan(0, v_lines[0], facecolor='grey', alpha=0.3)
@@ -347,7 +346,7 @@ def load_pickle_dict(file_path):
     return file
 
 
-def compute_corr(true_vals, preds):
+def compute_corr(true_vals, preds, divide = False):
     """ Returns the overall correlation between real and predicted values in case the 
     number of neurons under study is 168.
     
@@ -358,26 +357,13 @@ def compute_corr(true_vals, preds):
     Returns:
         overall correlation coefficient
     """
+    if divide:
+        corr = np.diag(np.corrcoef(true_vals, preds, rowvar = False)[:168, 168:])
+    else:
+        corr = np.mean(np.diag(np.corrcoef(true_vals, preds, rowvar = False)[:168, 168:]))
     
-    return np.mean(np.diag(np.corrcoef(true_vals, preds, rowvar = False)[:168, 168:]))
+    return corr
 
 
 
-def load_test_data(path_to_data):
-    """ Load IT data
-
-    Args:
-        path_to_data (str): Path to the data
-
-    Returns:
-        np.array (x6): Stimulus train/val/test; objects list train/val/test; spikes train/val
-    """
-    
-    datafile = h5py.File(os.path.join(path_to_data,'IT_data.h5'), 'r')
-    
-    stimulus_test = datafile['stimulus_test'][()]
-    spikes_test = datafile['spikes_test'][()]
-    objects_test = [obj_tmp.decode("latin-1") for obj_tmp in objects_test]
-
-    return stimulus_test, spikes_test, objects_test
 
