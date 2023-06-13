@@ -1,7 +1,7 @@
 ## Brain-Like-Computation-Project
 ### Group project for NX-414 course at EPFL 
 
-### Authors (team: Team_BAK)
+### Authors
 - Ernesto Bocini: [@ernestoBocini](https://github.com/ernestoBocini)
 - Florence Crozat [@florence11](https://github.com/florence11)
 
